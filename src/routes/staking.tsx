@@ -184,8 +184,8 @@ const Staking = () => {
   const [userStakedInfoMap, setUserStakedInfoMap] = useState<Map<number, UserStakedInfoType>>(new Map());
 
   const disableClaiming = useMemo(() => {
-    return isWaiting || unclaimedEras.total === 0 && totalUnclaimed.toNumber() === 0;
-  }, [isWaiting, unclaimedEras, totalUnclaimed]);
+    return isWaiting || unclaimedEras.total === 0;
+  }, [isWaiting, unclaimedEras]);
 
   const [rewardsUserClaimedQuery, reexecuteQuery] = useQuery({
     query: TotalRewardsClaimedQuery,
@@ -445,7 +445,7 @@ const Staking = () => {
   }, [claimAllSuccess, reexecuteQuery]);
 
   const handleClaimRewards = useCallback(async () => {
-    if (!selectedAccount || !unclaimedEras || !currentStakingEra) return;
+    if (disableClaiming || !selectedAccount || !unclaimedEras || !currentStakingEra) return;
 
     await restakeClaim({
       api,
@@ -526,7 +526,7 @@ const Staking = () => {
       rewardsUserClaimedQuery.data.stakers[0].totalUnclaimed
     );
     setTotalUnclaimed(totalUnclaimed);
-  }, [rewardsUserClaimedQuery, selectedAccount, rewardsUserClaimedQuery.fetching, rewardsUserClaimedQuery.data, claimAllSuccess]);
+  }, [rewardsUserClaimedQuery, selectedAccount, rewardsUserClaimedQuery.fetching, rewardsUserClaimedQuery.data]);
 
   return (
     <div className="mx-auto w-full flex max-w-7xl flex-col justify-between p-4 sm:px-6 lg:px-8 mt-14 md:mt-0 gap-3">
